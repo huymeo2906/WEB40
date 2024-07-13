@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handling Events</title>
+    <style>
+        .circle {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: red;
+        }
+
+        .square {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: blue;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Xin chào, tôi tên là <span class="name">Huy</span></h1>
+
+    <button onclick="changeName()" onmouseenter="showFullName()" onmouseleave="showShortName()">Thay đổi</button>
+    <button onclick="changeColor()">Thay đổi màu chữ</button>
+    <a href="http://facebook.com"> Facebook </a>
+    <div class="counter" data-min="-5" data-max="5">
+        <button class="minus">-</button>
+        <span>0</span>
+        <button class="plus">+</button>
+    </div>
+
+    <div class="counter" data-min="-10" data-max="10">
+        <button class="minus">-</button>
+        <span>0</span>
+        <button class="plus">+</button>
+    </div>
+    <script>
+        function showCircle(e) {
+            const prev = document.querySelector(".circle");
+            if (prev) prev.remove();
+            const x = e.clientX;
+            const y = e.clientY;
+            const circle = document.createElement("div");
+            circle.classList.add("circle");
+            circle.style.left = `${x - 15}px`;
+            circle.style.top = `${y - 15}px`;
+            document.body.append(circle);
+        }
+        document.addEventListener("click", showCircle);
+
+        function changeName() {
+            const nameElement = document.querySelector('.name');
+            if (nameElement.textContent === 'Huy') {
+                nameElement.textContent = 'Nguyễn Cao Huy';
+            } else {
+                nameElement.textContent = 'Huy';
+            }
+        }
+
+        function showFullName() {
+            const nameElement = document.querySelector('.name');
+            nameElement.textContent = 'Nguyễn Cao Huy';
+        }
+
+        function showShortName() {
+            const nameElement = document.querySelector('.name');
+            nameElement.textContent = 'Huy';
+        }
+
+        function changeColor() {
+            const nameElement = document.querySelector('.name');
+            const colors = ['red', 'blue', 'green', 'purple', 'orange'];
+            const currentColor = nameElement.style.color;
+            let newColor = colors[Math.floor(Math.random() * colors.length)];
+
+            while (newColor === currentColor) {
+                newColor = colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            nameElement.style.color = newColor;
+        }
+
+        document.querySelectorAll('.counter').forEach(counter => {
+            const minusButton = counter.querySelector('.minus');
+            const plusButton = counter.querySelector('.plus');
+            const span = counter.querySelector('span');
+            const min = parseInt(counter.dataset.min, 10);
+            const max = parseInt(counter.dataset.max, 10);
+
+            minusButton.addEventListener('click', () => {
+                let value = parseInt(span.textContent, 10);
+                if (value > min) {
+                    span.textContent = value - 1;
+                }
+            });
+
+            plusButton.addEventListener('click', () => {
+                let value = parseInt(span.textContent, 10);
+                if (value < max) {
+                    span.textContent = value + 1;
+                }
+            });
+        });
+
+        // Bài 1
+        document.addEventListener('keydown', (event) => {
+            const prevCircle = document.querySelector('.circle');
+            const prevSquare = document.querySelector('.square');
+            if (prevCircle) prevCircle.remove();
+            if (prevSquare) prevSquare.remove();
+
+            const x = Math.random() * (window.innerWidth - 50);
+            const y = Math.random() * (window.innerHeight - 50);
+            const shape = document.createElement('div');
+
+            if (event.key === 'Enter') {
+                shape.classList.add('circle');
+            } else if (event.key === ' ') {
+                shape.classList.add('square');
+            } else {
+                document.body.style.backgroundColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+                return;
+            }
+
+            shape.style.left = `${x}px`;
+            shape.style.top = `${y}px`;
+
+            document.body.append(shape);
+        });
+
+        // Bài 2
+        const movableCircle = document.createElement('div');
+        movableCircle.classList.add('circle');
+        movableCircle.style.left = '50%';
+        movableCircle.style.top = '50%';
+        document.body.append(movableCircle);
+
+        document.addEventListener('keydown', (event) => {
+            const step = 20;
+            let left = parseInt(movableCircle.style.left, 10) || window.innerWidth / 2;
+            let top = parseInt(movableCircle.style.top, 10) || window.innerHeight / 2;
+
+            switch (event.key) {
+                case 'ArrowUp':
+                    top = Math.max(top - step, 0);
+                    break;
+                case 'ArrowDown':
+                    top = Math.min(top + step, window.innerHeight - 50);
+                    break;
+                case 'ArrowLeft':
+                    left = Math.max(left - step, 0);
+                    break;
+                case 'ArrowRight':
+                    left = Math.min(left + step, window.innerWidth - 50);
+                    break;
+            }
+
+            movableCircle.style.left = `${left}px`;
+            movableCircle.style.top = `${top}px`;
+        });
+    </script>
+</body>
+
+</html>
